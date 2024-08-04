@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posts</title>
+    <style>
+        .pagination {
+            display: flex;
+            list-style: none;
+        }
+
+        .pagination li {
+            margin: 5px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .pagination a:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Blog Posts</h1>
+    <ul>
+        {% for post in page_obj %}
+            <li>{{ post.title }} ({{ post.created_at }})</li>
+        {% endfor %}
+    </ul>
+
+    <div>
+        <form method="GET" action="">
+            <label for="page_size">Количество постов на странице:</label>
+            <select name="page_size" id="page_size" onchange="this.form.submit()">
+                <option value="5" {% if page_obj.paginator.per_page == 5 %}selected{% endif %}>5</option>
+                <option value="10" {% if page_obj.paginator.per_page == 10 %}selected{% endif %}>10</option>
+                <option value="15" {% if page_obj.paginator.per_page == 15 %}selected{% endif %}>15</option>
+            </select>
+        </form>
+    </div>
+
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li><a href="?page=1&page_size={{ page_obj.paginator.per_page }}">Первая</a></li>
+
+
+            <li><a href="?page={{ page_obj.previous_page_number }}&page_size={{ page_obj.paginator.per_page }}">Назад</a></li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            <li{% if num == page_obj.number %} class="active"{% endif %}>
+                <a href="?page={{ num }}&page_size={{ page_obj.paginator.per_page }}">{{ num }}</a>
+            </li>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li><a href="?page={{ page_obj.next_page_number }}&page_size={{ page_obj.paginator.per_page }}">Вперед</a></li>
+            <li><a href="?page={{ page_obj.paginator.num_pages }}&page_size={{ page_obj.paginator.per_page }}">Последняя</a></li>
+        {% endif %}
+    </ul>
+</body>
+</html>
